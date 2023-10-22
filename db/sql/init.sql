@@ -11,8 +11,8 @@ CREATE TABLE transform_image_settings (
 INSERT INTO transform_image_settings
     (image_name, output_type, resize_height, resize_width)
 VALUES
-    ('example_file1.png', 'png', 50, 50),
-    ('example_file2.jpeg', 'jpeg', 10, 50),
-    ('example_file3.png', 'png',  50, 50),
-    ('example_file4.jpeg', 'jpeg', 30, 50),
-    ('example_file5.png', 'png', 50, 50);
+    ('example_file1.png', 'png', 0.5, 0.5),
+    ('example_file2.jpeg', 'jpeg', 0.1, 0.5),
+    ('example_file3.png', 'png',  0.5, 0.5),
+    ('example_file4.jpeg', 'jpeg', 0.3, 0.5),
+    ('example_file5.png', 'png', 0.5, 0.5);

@@ -7,71 +7,67 @@ import (
 	"image/jpeg"
 	"image/png"
 	"os"
+	"path/filepath"
 	"strings"
 )
 
-func resizeImageBySeparateRatios(inputPath, outputPath string, xRatio, yRatio float64) error {
-	// 入力ファイルを開く
+func resizeImageBySeparateRatios(inputPath string, xRatio, yRatio float32) (string, error) {
+
+	outputPath := filepath.Dir(inputPath) + "/resized_" + filepath.Base(inputPath)
+
 	file, err := os.Open(inputPath)
 	if err != nil {
-		return err
+		return "", err
 	}
 	defer file.Close()
 
-	// 画像をデコード
 	img, _, err := image.Decode(file)
 	if err != nil {
-		return err
+		return "", err
 	}
 
-	// リサイズの新しい幅と高さを計算
-	newWidth := uint(float64(img.Bounds().Dx()) * xRatio)
-	newHeight := uint(float64(img.Bounds().Dy()) * yRatio)
+	newWidth := uint(float32(img.Bounds().Dx()) * xRatio)
+	newHeight := uint(float32(img.Bounds().Dy()) * yRatio)
 
-	// 画像をリサイズ
 	resizedImg := resize.Resize(newWidth, newHeight, img, resize.Lanczos3)
 
-	// リサイズした画像を出力ファイルに保存
 	out, err := os.Create(outputPath)
 	if err != nil {
-		return err
+		return "", err
 	}
 	defer out.Close()
 
-	return jpeg.Encode(out, resizedImg, nil)
+	return outputPath, jpeg.Encode(out, resizedImg, nil)
 }
 
-// ConvertImageFormat は指定された入力ファイルを指定された出力形式に変換します。
-func ConvertImageFormat(inputPath, outputPath, outputFormat string) error {
-	// 入力ファイルを開く
+func ConvertImageFormat(inputPath, outputFormat string) (string, error) {
+	outputPath := "./gcs/tmp/transform" + "/formatted_" + filepath.Base(inputPath)
+
 	file, err := os.Open(inputPath)
 	if err != nil {
-		return err
+		return "", err
 	}
 	defer file.Close()
 
-	// 画像をデコード
 	img, _, err := image.Decode(file)
 	if err != nil {
-		return err
+		return "", err
 	}
 
-	// 出力ファイルを作成
 	out, err := os.Create(outputPath)
 	if err != nil {
-		return err
+		return "", err
 	}
 	defer out.Close()
 
-	// 指定されたフォーマットでエンコード
 	switch strings.ToLower(outputFormat) {
 	case "jpeg":
 		err = jpeg.Encode(out, img, nil)
 	case "png":
 		err = png.Encode(out, img)
 	default:
-		return fmt.Errorf("unsupported output format: %s", outputFormat)
+		return "", fmt.Errorf("unsupported output format: %s", outputFormat)
 	}
 
-	return err
+	return outputPath, err
 }

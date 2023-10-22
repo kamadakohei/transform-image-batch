@@ -11,7 +11,7 @@ import (
 
 var db *sql.DB
 
-type TransformImageSettings struct {
+type TransformImageSetting struct {
 	ID           int64
 	ImageName    string
 	OutputType   string
@@ -19,14 +19,14 @@ type TransformImageSettings struct {
 	ResizeHeight float32
 }
 
-func GetSettings() {
+func GetSettings(imageName string) (TransformImageSetting, error) {
 	// Capture connection properties.
 	cfg := mysql.Config{
-		User:                 os.Getenv("DBUSER"),
-		Passwd:               os.Getenv("DBPASS"),
+		User:                 os.Getenv("USER"),
+		Passwd:               os.Getenv("PASS"),
 		Net:                  "tcp",
-		Addr:                 "127.0.0.1:8000",
-		DBName:               "transform_image_settings",
+		Addr:                 os.Getenv("HOST") + ":" + os.Getenv("PORT"),
+		DBName:               os.Getenv("DBNAME"),
 		AllowNativePasswords: true,
 	}
 	// Get a database handle.
@@ -42,22 +42,23 @@ func GetSettings() {
 	}
 	fmt.Println("Connected!")
 
-	alb, err := TransformImageSettingsByImageName("example_file1.png")
+	setting, err := TransformImageSettingByImageName(imageName)
 	if err != nil {
 		log.Fatal(err)
 	}
-	fmt.Printf("Transform_image_settings found: %v\n", alb)
+
+	return setting, err
 }
 
-func TransformImageSettingsByImageName(imageName string) (TransformImageSettings, error) {
-	var settings TransformImageSettings
+func TransformImageSettingByImageName(imageName string) (TransformImageSetting, error) {
+	var setting TransformImageSetting
 
 	row := db.QueryRow("SELECT * FROM transform_image_settings WHERE image_name = ?", imageName)
-	if err := row.Scan(&settings.ID, &settings.ImageName, &settings.OutputType, &settings.ResizeHeight, &settings.ResizeWidth); err != nil {
+	if err := row.Scan(&setting.ID, &setting.ImageName, &setting.OutputType, &setting.ResizeHeight, &setting.ResizeWidth); err != nil {
 		if errors.Is(err, sql.ErrNoRows) {
-			return settings, fmt.Errorf("TransformImageSettingsByImageName %d: no such image", imageName)
+			return setting, fmt.Errorf("TransformImageSettingsByImageName %d: no such image", imageName)
 		}
-		return settings, fmt.Errorf("TransformImageSettingsByImageName %d: %v", imageName, err)
+		return setting, fmt.Errorf("TransformImageSettingsByImageName %d: %v", imageName, err)
 	}
-	return settings, nil
+	return setting, nil
 }

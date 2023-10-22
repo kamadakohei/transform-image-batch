@@ -6,6 +6,6 @@ services:
     ports:
       - 4443:4443
     volumes:
-      - ${PWD}/tmp/data:/data
+      - ${PWD}/data:/data
       -  ./.storage:/storage
     command: -scheme http
