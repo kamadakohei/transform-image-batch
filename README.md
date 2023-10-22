@@ -43,6 +43,18 @@ DBNAME=xxxx
 `go run　. -b <バケット名> -0 <オブジェクト名>`  
 例）`go run　. -b "sample-bucket" -o "download/sample.jpg'"
 
+```bash                                                                             4s   05:22:47 
+❯ go run . -b "transform-image-bucket" -o "download/sample.jpeg"
+Bucket Name: transform-image-bucket
+Download Object Name: download/sample.jpeg
+Connected!
+setting: {1 sample.jpeg png 0.5 0.5}
+Blob download/sample.jpeg downloaded to local file ./gcs/tmp/download/sample.jpeg
+Image resized successfully!
+/Users/kamadakohei/transform-image-batchBlob upload/20231023052422_formatted_resized_sample.jpeg uploaded.
+Image uploaded successfully!
+```
+
 
 ## 工夫した点
 - 半日ほどでGo言語を学習した後、実装した
