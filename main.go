@@ -72,6 +72,8 @@ func main() {
 		fmt.Printf("Error uploading file: %v\n", err)
 		return
 	}
+
+	fmt.Println("Image uploaded successfully!")
 }
 
 func getFileExtension(fileName string) string {
