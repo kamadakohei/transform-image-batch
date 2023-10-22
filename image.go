@@ -9,6 +9,7 @@ import (
 	"os"
 	"path/filepath"
 	"strings"
+	"time"
 )
 
 func resizeImageBySeparateRatios(inputPath string, xRatio, yRatio float32) (string, error) {
@@ -41,7 +42,10 @@ func resizeImageBySeparateRatios(inputPath string, xRatio, yRatio float32) (stri
 }
 
 func ConvertImageFormat(inputPath, outputFormat string) (string, error) {
-	outputPath := "./gcs/tmp/transform" + "/formatted_" + filepath.Base(inputPath)
+	currentTime := time.Now()
+	timeString := currentTime.Format("20060102150405")
+
+	outputPath := "./gcs/tmp/transform" + "/" + timeString + "_" + "formatted_" + filepath.Base(inputPath)
 
 	file, err := os.Open(inputPath)
 	if err != nil {
