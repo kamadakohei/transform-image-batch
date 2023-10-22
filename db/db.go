@@ -5,7 +5,6 @@ import (
 	"errors"
 	"fmt"
 	"github.com/go-sql-driver/mysql"
-	"log"
 	"os"
 )
 
@@ -19,8 +18,7 @@ type TransformImageSetting struct {
 	ResizeHeight float32
 }
 
-func GetSettings(imageName string) (TransformImageSetting, error) {
-	// Capture connection properties.
+func InitDB() error {
 	cfg := mysql.Config{
 		User:                 os.Getenv("DB_USER"),
 		Passwd:               os.Getenv("DB_PASS"),
@@ -29,25 +27,24 @@ func GetSettings(imageName string) (TransformImageSetting, error) {
 		DBName:               os.Getenv("DBNAME"),
 		AllowNativePasswords: true,
 	}
-	// Get a database handle.
+
 	var err error
 	db, err = sql.Open("mysql", cfg.FormatDSN())
 	if err != nil {
-		log.Fatal(err)
+		return err
 	}
 
-	pingErr := db.Ping()
-	if pingErr != nil {
-		log.Fatal(pingErr)
-	}
-	fmt.Println("Connected!")
+	return db.Ping()
+}
 
-	setting, err := TransformImageSettingByImageName(imageName)
-	if err != nil {
-		log.Fatal(err)
+func GetSettings(imageName string) (TransformImageSetting, error) {
+	if db == nil {
+		if err := InitDB(); err != nil {
+			return TransformImageSetting{}, err
+		}
 	}
 
-	return setting, err
+	return TransformImageSettingByImageName(imageName)
 }
 
 func TransformImageSettingByImageName(imageName string) (TransformImageSetting, error) {
