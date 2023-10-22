@@ -1,0 +1,11 @@
+version: '3.8'
+
+services:
+  gcs:
+    image: fsouza/fake-gcs-server
+    ports:
+      - 4443:4443
+    volumes:
+      - ${PWD}/tmp/data:/data
+      -  ./.storage:/storage
+    command: -scheme http
