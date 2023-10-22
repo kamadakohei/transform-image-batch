@@ -1,1 +1,9 @@
-package transform_image_batch
+package main
+
+import (
+	"transform-image-batch/db"
+)
+
+func main() {
+	db.GetSettings()
+}
