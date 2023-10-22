@@ -6,23 +6,23 @@ import (
 	"image"
 	"image/jpeg"
 	"image/png"
+	"io"
 	"os"
 	"path/filepath"
 	"strings"
 	"time"
 )
 
+const (
+	TransformDir = "./gcs/tmp/transform"
+)
+
 func resizeImageBySeparateRatios(inputPath string, xRatio, yRatio float32) (string, error) {
-
+	fmt.Println(inputPath)
 	outputPath := filepath.Dir(inputPath) + "/resized_" + filepath.Base(inputPath)
+	inputFileFormat := GetFileExtension(inputPath)
 
-	file, err := os.Open(inputPath)
-	if err != nil {
-		return "", err
-	}
-	defer file.Close()
-
-	img, _, err := image.Decode(file)
+	img, _, err := loadImage(inputPath)
 	if err != nil {
 		return "", err
 	}
@@ -32,46 +32,64 @@ func resizeImageBySeparateRatios(inputPath string, xRatio, yRatio float32) (stri
 
 	resizedImg := resize.Resize(newWidth, newHeight, img, resize.Lanczos3)
 
-	out, err := os.Create(outputPath)
+	out, err := createFile(outputPath)
 	if err != nil {
 		return "", err
 	}
-	defer out.Close()
 
-	return outputPath, jpeg.Encode(out, resizedImg, nil)
+	return outputPath, encodeImage(out, resizedImg, inputFileFormat)
 }
 
 func ConvertImageFormat(inputPath, outputFormat string) (string, error) {
 	currentTime := time.Now()
 	timeString := currentTime.Format("20060102150405")
 
-	outputPath := "./gcs/tmp/transform" + "/" + timeString + "_" + "formatted_" + filepath.Base(inputPath)
+	outputPath := filepath.Join(TransformDir, timeString+"_formatted_"+GetFileNameWithoutExtension(filepath.Base(inputPath))+"."+outputFormat)
 
-	file, err := os.Open(inputPath)
-	if err != nil {
-		return "", err
-	}
-	defer file.Close()
-
-	img, _, err := image.Decode(file)
+	img, _, err := loadImage(inputPath)
 	if err != nil {
 		return "", err
 	}
 
-	out, err := os.Create(outputPath)
+	out, err := createFile(outputPath)
 	if err != nil {
 		return "", err
 	}
-	defer out.Close()
 
-	switch strings.ToLower(outputFormat) {
-	case "jpeg":
-		err = jpeg.Encode(out, img, nil)
-	case "png":
-		err = png.Encode(out, img)
-	default:
-		return "", fmt.Errorf("unsupported output format: %s", outputFormat)
+	err = encodeImage(out, img, outputFormat)
+	if err != nil {
+		return "", err
 	}
 
 	return outputPath, err
+}
+
+func loadImage(inputPath string) (image.Image, string, error) {
+	file, err := os.Open(inputPath)
+	if err != nil {
+		return nil, "", err
+	}
+	defer file.Close()
+
+	img, format, err := image.Decode(file)
+	return img, format, err
+}
+
+func createFile(path string) (*os.File, error) {
+	out, err := os.Create(path)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func encodeImage(w io.Writer, img image.Image, format string) error {
+	switch strings.ToLower(format) {
+	case "jpeg":
+		return jpeg.Encode(w, img, nil)
+	case "png":
+		return png.Encode(w, img)
+	default:
+		return fmt.Errorf("unsupported output format: %s", format)
+	}
 }

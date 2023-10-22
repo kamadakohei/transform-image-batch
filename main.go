@@ -6,7 +6,6 @@ import (
 	"github.com/joho/godotenv"
 	"os"
 	"path/filepath"
-	"strings"
 	"transform-image-batch/db"
 	"transform-image-batch/gcs"
 )
@@ -62,7 +61,7 @@ func main() {
 		fmt.Println("Image resized successfully!")
 	}
 
-	formattedFilePath, err := ConvertImageFormat(resizedFilePath, getFileExtension(filepath.Base(resizedFilePath)))
+	formattedFilePath, err := ConvertImageFormat(resizedFilePath, setting.OutputType)
 	if err != nil {
 		fmt.Println("Error:", err)
 	}
@@ -74,10 +73,4 @@ func main() {
 	}
 
 	fmt.Println("Image uploaded successfully!")
-}
-
-func getFileExtension(fileName string) string {
-	extensionWithDot := filepath.Ext(fileName)
-	extension := strings.TrimPrefix(extensionWithDot, ".")
-	return extension
 }
