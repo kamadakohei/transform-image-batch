@@ -1,3 +1,3 @@
-# transform-imgage-batch
+# transform-image-batch
 
 Enablement Bootcamp for Gopherizing #2 の課題提出用リポジトリです。
