@@ -58,7 +58,7 @@ Image uploaded successfully!
 
 ## 工夫した点
 - 半日ほどでGo言語を学習した後、実装した
-  - Tour of go学習後、今回の実装に必要な箇所だけ写経して実装した
+  - Tour of go学習後、goのtutorialで今回の実装に必要な箇所だけ写経して実装した  
     https://github.com/kamadakohei/go-tutorial
 - テスト時にローカル実行できる用のdocker-compose.ymlを作成した（ただし、時間の関係でテストを書けていない）
 - main.goにすべての処理を書かずに、ディレクトリを分けて処理を書いた
