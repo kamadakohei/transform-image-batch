@@ -10,11 +10,17 @@ import (
 	"time"
 )
 
+const (
+	DownloadPathPrefix = "./gcs/tmp/download/"
+	UploadPathPrefix   = "upload/"
+	TimeoutSeconds     = 50
+)
+
 func DownloadFile(ctx context.Context, client *storage.Client, w io.Writer, bucket, object string) (string, error) {
 	ctx, cancel := context.WithTimeout(ctx, time.Second*50)
 	defer cancel()
 
-	destFileName := "./gcs/tmp/download/" + filepath.Base(object)
+	destFileName := DownloadPathPrefix + filepath.Base(object)
 	f, err := os.Create(destFileName)
 	if err != nil {
 		return "", fmt.Errorf("os.Create: %w", err)
@@ -41,7 +47,7 @@ func DownloadFile(ctx context.Context, client *storage.Client, w io.Writer, buck
 }
 
 func UploadFile(w io.Writer, bucket, objectFilePath string) error {
-	uploadFilePath := "upload/" + filepath.Base(objectFilePath)
+	uploadFilePath := UploadPathPrefix + filepath.Base(objectFilePath)
 
 	ctx := context.Background()
 	client, err := storage.NewClient(ctx)
@@ -49,15 +55,14 @@ func UploadFile(w io.Writer, bucket, objectFilePath string) error {
 		return fmt.Errorf("storage.NewClient: %w", err)
 	}
 	defer client.Close()
-	currentDir, err := os.Getwd()
-	fmt.Printf(currentDir)
+
 	f, err := os.Open(objectFilePath)
 	if err != nil {
 		return fmt.Errorf("os.Open: %w", err)
 	}
 	defer f.Close()
 
-	ctx, cancel := context.WithTimeout(ctx, time.Second*50)
+	ctx, cancel := context.WithTimeout(ctx, time.Second*TimeoutSeconds)
 	defer cancel()
 
 	o := client.Bucket(bucket).Object(uploadFilePath)
