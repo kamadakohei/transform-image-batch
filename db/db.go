@@ -22,10 +22,10 @@ type TransformImageSetting struct {
 func GetSettings(imageName string) (TransformImageSetting, error) {
 	// Capture connection properties.
 	cfg := mysql.Config{
-		User:                 os.Getenv("USER"),
-		Passwd:               os.Getenv("PASS"),
+		User:                 os.Getenv("DB_USER"),
+		Passwd:               os.Getenv("DB_PASS"),
 		Net:                  "tcp",
-		Addr:                 os.Getenv("HOST") + ":" + os.Getenv("PORT"),
+		Addr:                 os.Getenv("MYSQL_HOST") + ":" + os.Getenv("PORT"),
 		DBName:               os.Getenv("DBNAME"),
 		AllowNativePasswords: true,
 	}

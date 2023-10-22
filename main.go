@@ -3,12 +3,21 @@ package main
 import (
 	"flag"
 	"fmt"
+	"github.com/joho/godotenv"
 	"os"
 	"path/filepath"
 	"strings"
 	"transform-image-batch/db"
 	"transform-image-batch/gcs"
 )
+
+func init() {
+	err := godotenv.Load(".env")
+
+	if err != nil {
+		fmt.Printf("cannot read env file: %v", err)
+	}
+}
 
 func main() {
 	var bucketName, downloadObjectName string
