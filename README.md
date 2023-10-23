@@ -26,7 +26,8 @@ db
 ```
 
 ## 前提
-- GCPアカウントでのASD設定済み
+- GCPアカウントでのローカル認証設定済み
+https://cloud.google.com/docs/authentication/provide-credentials-adc?hl=ja#local-dev
 - リサイズ時にアスペクト比は考慮しない
 - .envファイルにDB情報を記載してroot直下においてください
 
