@@ -49,7 +49,7 @@ DBNAME=batch
 
 ## 動かし方
 `go run　. -b <バケット名> -0 <オブジェクト名>`  
-例）`go run　. -b "sample-bucket" -o "download/sample.jpg'"
+例）`go run　. -b "sample-bucket" -o "download/sample.jpg'`
 
 ```bash                                                                             4s   05:22:47 
 ❯ go run . -b "transform-image-bucket" -o "download/sample.jpeg"
