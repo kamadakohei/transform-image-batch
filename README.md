@@ -9,16 +9,16 @@ DBに保存済みの変換設定で画像変換する
 
 ```text
 main.go // 変換実行ファイル
-main_test.go // インテグレーションテストファイル
+main_test.go // インテグレーションテストファイル（未作成分）
 image.go //　画像変換処理ファイル
 gcs
   gcs.go  // GCSのクライアントファイル
-  gcs_test.go // gcs.goのユニットテストファイル
+  gcs_test.go // gcs.goのユニットテストファイル（未作成）
   docker-compose.yml ローカルでGSSのモックを立ち上げるファイル
 db
   db.go   // DBに接続するファイル
   client.go // GCSのクライアント作成ファイル
-  db_test.go //db.goのユニットテストファイル
+  db_test.go //db.goのユニットテストファイル（未作成）
   docker-compose.yml // ローカルでDBを立ち上げるdocker-composeファイル
   tmp 
     download // ダウンロードした画像を保存するディレクトリ
@@ -26,7 +26,7 @@ db
 ```
 
 ## 前提
-- GCPアカウントでの認証済み
+- GCPアカウントでのASD設定済み
 - リサイズ時にアスペクト比は考慮しない
 - .envファイルにDB情報を記載してroot直下においてください
 
@@ -38,6 +38,14 @@ PORT=xxxx
 DBNAME=xxxx
 ```
 
+※docker-compose.ymlファイルでローカル実行する場合は以下のように設定してください。
+```
+DB_USER=root
+DB_PASS=<docker-compose.ymlで設定したパスワード>
+MYSQL_HOST=127.0.0.1
+PORT=8000
+DBNAME=batch
+```
 
 ## 動かし方
 `go run　. -b <バケット名> -0 <オブジェクト名>`  
@@ -57,7 +65,7 @@ Image uploaded successfully!
 
 
 ## 工夫した点
-- 半日ほどでGo言語を学習した後、実装した
+- 1日Go言語を学習した後、要件を満たすように最低限実装できた
   - Tour of go学習後、goのtutorialで今回の実装に必要な箇所だけ写経して実装した  
     https://github.com/kamadakohei/go-tutorial
 - テスト時にローカル実行できる用のdocker-compose.ymlを作成した（ただし、時間の関係でテストを書けていない）
