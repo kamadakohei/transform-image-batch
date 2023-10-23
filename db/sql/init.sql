@@ -1,3 +1,5 @@
+CREATE DATABASE IF NOT EXISTS batch;
+USE batch;
 DROP TABLE IF EXISTS transform_image_settings;
 CREATE TABLE transform_image_settings (
     id         INT AUTO_INCREMENT NOT NULL,

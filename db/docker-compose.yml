@@ -12,6 +12,6 @@ services:
     restart: always
     environment:
       MYSQL_ROOT_PASSWORD: s2012917
-      MYSQL_DATABASE: transform_image_settings
+      MYSQL_DATABASE: batch
     ports:
       - 8000:3306
