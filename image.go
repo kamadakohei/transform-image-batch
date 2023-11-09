@@ -44,7 +44,7 @@ func ConvertImageFormat(inputPath, outputFormat string) (string, error) {
 	currentTime := time.Now()
 	timeString := currentTime.Format("20060102150405")
 
-	outputPath := filepath.Join(TransformDir, timeString+"_formatted_"+GetFileNameWithoutExtension(filepath.Base(inputPath))+"."+outputFormat)
+	outputPath := filepath.Dir(inputPath) + timeString + "_formatted_" + filepath.Base(inputPath) + "." + outputFormat
 
 	img, _, err := loadImage(inputPath)
 	if err != nil {
